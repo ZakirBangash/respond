@@ -19,6 +19,34 @@ This README describes what is in this repository as implemented. For navigation 
 
 ---
 
+## Architecture
+
+**This project follows a highly scalable architecture.** The codebase is structured so new features can be added without collapsing screens, API, state, and UI into one place.
+
+What that means in this repo:
+
+| Layer | Responsibility | Where |
+| --- | --- | --- |
+| **Routes / flows** | Navigation only. Each feature owns its own stack. | `app/routes/` |
+| **Screens** | Screen UI and screen-local hooks. | `app/routes/tabs/`, `app/routes/flows/` |
+| **Design system** | Reusable visual primitives and tokens. | `app/respond-ui/` |
+| **App chrome** | Screen shell, header, image loader. | `app/components/` |
+| **Services** | HTTP client, endpoints, React Query hooks. | `app/services/` |
+| **Stores** | Client/UI state (Zustand). | `app/stores/` |
+| **Config / i18n** | Environment config and translations. | `app/config/`, `app/i18n/` |
+
+Scalability choices already in the tree:
+
+- **Feature-first navigation** — the root stack stays thin; each flow is a folder (`app/routes/flows/<flow>/`) with its own stack, types, and screens. New product areas add a flow instead of growing a single navigator.
+- **Separated concerns** — fetching lives in `services/`, client state in `stores/`, look-and-feel in `respond-ui/`. Screens compose those layers; they do not own the API or the design system.
+- **Lazy flows** — root stack screens load with `getComponent` + `require`, so unused flows are not on the critical path.
+- **Typed route constants** — `TABS_ROUTES` / `CHAT_ROUTES` instead of hardcoded route strings, so navigation stays refactor-safe as the graph grows.
+- **Shared design system** — tokens and primitives are centralized so UI stays consistent as screen count increases.
+
+Details of the navigation graph: [`app/routes/README.md`](app/routes/README.md).
+
+---
+
 ## Stack (from `package.json` / Expo config)
 
 | Area | Technology |
