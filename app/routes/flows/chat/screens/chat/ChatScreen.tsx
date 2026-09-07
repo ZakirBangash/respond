@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useMemo } from "react"
 import { ActivityIndicator, View } from "react-native"
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list"
 
@@ -8,32 +8,32 @@ import { translate } from "@/i18n/translate"
 import { sharedStyles } from "@/utils/styles"
 import { Button, Text } from "respond-ui"
 
-import type { ChatMessage } from "./chat.types"
 import { styles } from "./ChatScreen.styles"
 import { DaySeparator } from "./components/DaySeparator"
 import { MessageBubble } from "./components/MessageBubble"
 import { MessageComposer } from "./components/MessageComposer"
 import { useChatScreen, type UseChatScreenResult } from "./hooks"
-import { getMessageLayout } from "./utils"
+import { getChatItemType, getChatListItems, type ChatListItem } from "./utils"
+
+const keyExtractor = (item: ChatListItem) => item.id
+
+const maintainVisibleContentPosition = {
+  autoscrollToBottomThreshold: 0.2,
+  startRenderingFromBottom: false,
+}
+
+const renderMessage = ({ item }: ListRenderItemInfo<ChatListItem>) => (
+  <View style={item.isGroupStart ? styles.groupGap : styles.messageGap}>
+    {item.isNewDay && <DaySeparator date={item.createdAt} />}
+    <MessageBubble message={item} isGroupStart={item.isGroupStart} />
+  </View>
+)
 
 export const ChatScreen = () => {
   const headerHeight = useHeaderHeight()
   const { isPending, isError, isBlocked, messages, onSend, onRetry }: UseChatScreenResult =
     useChatScreen()
-
-  const renderMessage = useCallback(
-    ({ item, index }: ListRenderItemInfo<ChatMessage>) => {
-      const { isNewDay, isGroupStart } = getMessageLayout(item, messages[index - 1])
-
-      return (
-        <View style={isGroupStart ? styles.groupGap : styles.messageGap}>
-          {isNewDay && <DaySeparator date={item.createdAt} />}
-          <MessageBubble message={item} isGroupStart={isGroupStart} />
-        </View>
-      )
-    },
-    [messages],
-  )
+  const listItems = useMemo(() => getChatListItems(messages), [messages])
 
   const renderLoading = () => (
     <View style={styles.centered}>
@@ -66,16 +66,15 @@ export const ChatScreen = () => {
   const renderMessages = () => (
     <>
       <FlashList
-        data={messages}
+        data={listItems}
         renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
-        initialScrollIndex={messages.length > 0 ? messages.length - 1 : undefined}
+        initialScrollIndex={listItems.length > 0 ? listItems.length - 1 : undefined}
+        keyExtractor={keyExtractor}
+        getItemType={getChatItemType}
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
-        maintainVisibleContentPosition={{
-          autoscrollToBottomThreshold: 0.2,
-        }}
+        maintainVisibleContentPosition={maintainVisibleContentPosition}
       />
       {isBlocked && renderBlockedBanner()}
       <MessageComposer onSend={onSend} disabled={isBlocked} />

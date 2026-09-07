@@ -3,7 +3,7 @@ import { Platform } from "react-native"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 import { background } from "respond-ui/foundations"
 
-import type { ScreenPreset, ScreenProps } from "./types"
+import type { ScreenPreset, ScreenProps } from "../types"
 
 const isIos = Platform.OS === "ios"
 

@@ -4,9 +4,9 @@ import { SystemBars } from "react-native-edge-to-edge"
 import { sharedStyles } from "@/utils/styles"
 
 import { ScreenWithoutScrolling, ScreenWithScrolling } from "./components"
+import { useScreen } from "./hooks"
 import { styles } from "./styles"
 import type { ScreenProps } from "./types"
-import { useScreen } from "./useScreen"
 
 /**
  * Full-screen wrapper: safe area, status bar, keyboard, and optional scroll.
@@ -14,7 +14,6 @@ import { useScreen } from "./useScreen"
  * `preset`
  * - `fixed` — no scroll (default)
  * - `scroll` — always scroll
- * - `auto` — scroll only when content is taller than the screen
  *
  * @example
  * import { Screen } from "@/components/Screen"
@@ -41,17 +40,6 @@ import { useScreen } from "./useScreen"
  *   ScrollViewProps={{ showsVerticalScrollIndicator: false }}
  *   style={{ backgroundColor: "#FFFFFF" }}
  *   contentContainerStyle={{ padding: 16 }}
- * >
- *   {children}
- * </Screen>
- *
- * @example
- * <Screen
- *   preset="auto"
- *   scrollEnabledToggleThreshold={{ percent: 0.92, point: 0 }}
- *   keyboardShouldPersistTaps="handled"
- *   keyboardBottomOffset={50}
- *   ScrollViewProps={{ bounces: true }}
  * >
  *   {children}
  * </Screen>

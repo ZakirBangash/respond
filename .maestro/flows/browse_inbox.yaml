@@ -1,0 +1,21 @@
+# flow: browse_inbox
+# intent:
+# after a clean launch, confirm the Chats inbox is showing and scroll it.
+#
+# appId: ${MAESTRO_APP_ID}
+# onFlowStart:
+#   - runFlow: ../shared/_OnFlowStart.yaml
+# ---
+
+appId: ${MAESTRO_APP_ID}
+name: browse_inbox
+onFlowStart:
+  - runFlow: ../shared/_OnFlowStart.yaml
+---
+- extendedWaitUntil:
+    visible: "Chats"
+    timeout: 15000
+- assertVisible: "Chat"
+- assertNotVisible: "Could not load chats."
+- scroll
+- assertVisible: "Chats"

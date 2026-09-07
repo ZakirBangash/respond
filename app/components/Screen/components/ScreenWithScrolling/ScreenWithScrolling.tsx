@@ -1,7 +1,7 @@
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 
+import { useScreenWithScrolling } from "../../hooks"
 import type { ScreenProps } from "../../types"
-import { useScreenWithScrolling } from "../../useScreenWithScrolling"
 
 export const ScreenWithScrolling = (props: ScreenProps) => {
   const {
@@ -9,10 +9,7 @@ export const ScreenWithScrolling = (props: ScreenProps) => {
     children,
     contentContainerStyle,
     keyboardShouldPersistTaps,
-    onContentSizeChange,
-    onLayout,
     ref,
-    scrollEnabled,
     ScrollViewProps,
     style,
   } = useScreenWithScrolling(props)
@@ -21,11 +18,8 @@ export const ScreenWithScrolling = (props: ScreenProps) => {
     <KeyboardAwareScrollView
       bottomOffset={bottomOffset}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-      scrollEnabled={scrollEnabled}
       ref={ref}
       {...ScrollViewProps}
-      onLayout={onLayout}
-      onContentSizeChange={onContentSizeChange}
       style={style}
       contentContainerStyle={contentContainerStyle}
     >

@@ -6,7 +6,7 @@ import type { ExtendedEdge } from "@/utils/useSafeAreaInsetsStyle"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
 
-export type ScreenPreset = "fixed" | "scroll" | "auto"
+export type ScreenPreset = "fixed" | "scroll"
 
 interface BaseScreenProps {
   children?: ReactNode
@@ -33,15 +33,9 @@ export interface FixedScreenProps extends BaseScreenProps {
 
 export interface ScrollScreenProps extends BaseScreenProps {
   preset?: "scroll"
-  /** Keep keyboard open on tap. Defaults to handled. Scroll and auto only. */
+  /** Keep keyboard open on tap. Defaults to handled. Scroll only. */
   keyboardShouldPersistTaps?: "handled" | "always" | "never"
   ScrollViewProps?: ScrollViewProps
 }
 
-export interface AutoScreenProps extends Omit<ScrollScreenProps, "preset"> {
-  preset?: "auto"
-  /** When to turn scroll on or off. Defaults to `{ percent: 0.92 }`. */
-  scrollEnabledToggleThreshold?: { percent?: number; point?: number }
-}
-
-export type ScreenProps = ScrollScreenProps | FixedScreenProps | AutoScreenProps
+export type ScreenProps = ScrollScreenProps | FixedScreenProps

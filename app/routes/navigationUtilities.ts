@@ -9,18 +9,20 @@ import {
 import type { RootStackParamList } from "./routes.types"
 
 /**
- * Reference to the root App Navigator.
+ * Pointer to the app's navigator. Use when you are **not** inside a screen.
+ * Inside a screen, use `useNavigation()` instead.
  *
- * If needed, you can use this to access the navigation object outside of a
- * `NavigationContainer` context. However, it's recommended to use the `useNavigation` hook whenever possible.
- * @see [Navigating Without Navigation Prop]{@link https://reactnavigation.org/docs/navigating-without-navigation-prop/}
+ * @example
+ * navigationRef.navigate("Chat")
  */
 export const navigationRef = createNavigationContainerRef<RootStackParamList>()
 
 /**
- * Gets the current screen from any navigation state.
- * @param {NavigationState | PartialState<NavigationState>} state - The navigation state to traverse.
- * @returns {string} - The name of the current screen.
+ * Name of the screen the user is looking at right now (walks into nested tabs/stacks).
+ *
+ * @example
+ * getActiveRouteName(navigationRef.getRootState())
+ * // "TabsChatsTab"  (not "Tabs")
  */
 export function getActiveRouteName(state: NavigationState | PartialState<NavigationState>): string {
   const route = state.routes[state.index ?? 0]
@@ -33,11 +35,16 @@ export function getActiveRouteName(state: NavigationState | PartialState<Navigat
 const iosExit = () => false
 
 /**
- * Hook that handles Android back button presses and forwards those on to
- * the navigation or allows exiting the app.
- * @see [BackHandler]{@link https://reactnative.dev/docs/backhandler}
- * @param {(routeName: string) => boolean} canExit - Function that returns whether we can exit the app.
- * @returns {void}
+ * Android back button. iOS: no-op.
+ *
+ * Back on an "exit" screen → close the app.
+ * Back anywhere else → go to the previous screen.
+ *
+ * @example
+ * useBackButtonHandler((screen) => screen === "TabsChatsTab")
+ *
+ * // Chats tab + back     → app closes
+ * // Chat screen + back   → previous screen
  */
 export function useBackButtonHandler(canExit: (routeName: string) => boolean) {
   const canExitRef = useRef(Platform.OS !== "android" ? iosExit : canExit)
@@ -76,11 +83,10 @@ export function useBackButtonHandler(canExit: (routeName: string) => boolean) {
 }
 
 /**
- * use this to navigate without the navigation
- * prop. If you have access to the navigation prop, do not use this.
- * @see {@link https://reactnavigation.org/docs/navigating-without-navigation-prop/}
- * @param {unknown} name - The name of the route to navigate to.
- * @param {unknown} params - The params to pass to the route.
+ * Open a screen from outside React (e.g. a notification). Prefer `useNavigation` in screens.
+ *
+ * @example
+ * navigate("Chat", { screen: "ChatConversation", params: { conversationId: "42" } })
  */
 export function navigate(name: unknown, params?: unknown) {
   if (navigationRef.isReady()) {
@@ -90,8 +96,10 @@ export function navigate(name: unknown, params?: unknown) {
 }
 
 /**
- * This function is used to go back in a navigation stack, if it's possible to go back.
- * If the navigation stack can't go back, nothing happens.
+ * Go to the previous screen. Does nothing if there is nowhere to go.
+ *
+ * @example
+ * goBack()
  */
 export function goBack() {
   if (navigationRef.isReady() && navigationRef.canGoBack()) {
@@ -100,9 +108,10 @@ export function goBack() {
 }
 
 /**
- * resetRoot will reset the root navigation state to the given params.
- * @param {Parameters<typeof navigationRef.resetRoot>[0]} state - The state to reset the root to.
- * @returns {void}
+ * Wipe the stack and start from one screen. For logout / reset, not normal back.
+ *
+ * @example
+ * resetRoot({ index: 0, routes: [{ name: "Tabs" }] })
  */
 export function resetRoot(
   state: Parameters<typeof navigationRef.resetRoot>[0] = { index: 0, routes: [] },
