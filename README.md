@@ -124,22 +124,6 @@ respond/
 
 ---
 
-## Navigation architecture
-
-Documented in [`app/routes/README.md`](app/routes/README.md).
-
-This navigation setup is built to scale: the root stack stays thin, and **each flow owns its own stack** under `app/routes/flows/<flow>/`. New features add a new flow folder (stack + screens) without growing a single giant navigator. Tabs stay under `app/routes/tabs/` as the always-mounted shell.
-
-Summary:
-
-- **Root** native stack registers Tabs and each flow.
-- **Tabs** bottom-tab navigator lives under `app/routes/tabs/`.
-- **Each flow** (e.g. Chat) has **its stack inside that flow** — not in the root file. Root only mounts the flow.
-- Flows on the root stack are registered with `getComponent` + `require` (lazy load).
-- Route names come from `TABS_ROUTES` / `CHAT_ROUTES` constants.
-
----
-
 ## Design system (`respond-ui`) and Storybook
 
 Location: `app/respond-ui`.
