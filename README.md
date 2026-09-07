@@ -114,7 +114,7 @@ respond/
 │   ├── utils/                  Storage, dates, shared styles, system UI helpers, etc.
 ├── assets/                     Icons and images
 ├── .rnstorybook/               Storybook RN entry
-├── .maestro/                   Maestro shared setup (see Testing)
+├── .maestro/                   Maestro flows + shared setup (see Testing)
 ├── android/ / ios/             Native projects
 ├── app.json / app.config.ts    Expo config
 ├── eas.json                    EAS build profiles
@@ -193,14 +193,17 @@ To run on a simulator/device with the native project, use `pnpm ios` / `pnpm and
 
 - Config: `jest.config.js` (preset `jest-expo`, setup `test/setup.ts`)
 - Present test files:
-  - `app/respond-ui/components/Text.test.tsx`
   - `app/respond-ui/foundations/foundations.test.ts`
   - `app/utils/storage/storage.test.ts`
+  - `app/utils/useSafeAreaInsetsStyle.test.ts`
+  - `app/routes/flows/chat/screens/chat/utils/getChatListItems.test.ts`
 
 **Maestro**
 
 - Script: `pnpm test:maestro` → `maestro test -e MAESTRO_APP_ID=com.respond .maestro/flows`
-- In this repo today: `.maestro/shared/_OnFlowStart.yaml` exists; there is no `.maestro/flows/` directory with flow files checked in.
+- Shared setup: `.maestro/shared/_OnFlowStart.yaml` (clean launch; skips Expo dev-client screens when they appear)
+- Flows in `.maestro/flows/`:
+  - `browse_inbox.yaml` — after launch, assert the Chats inbox is visible and scrollable
 
 ---
 
