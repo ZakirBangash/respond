@@ -1,0 +1,15 @@
+---
+description: Always run ESLint and TypeScript checks after code changes
+alwaysApply: true
+---
+
+# Verify after changes
+
+From the `respond` project root, after any code edit, run both and fix failures before finishing:
+
+```sh
+pnpm lint:check
+pnpm compile
+```
+
+Do not claim the work is done if either command reports errors.

@@ -1,0 +1,15 @@
+---
+description: Constraints when editing existing respond-ui design-system files
+globs: app/respond-ui/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Editing respond-ui
+
+- Tokens only from `respond-ui/foundations`. No new hex.
+- Everything the primitive shows or does is a prop (copy, data, callbacks, children). No i18n, fetch, or store reads inside.
+- Do not add `tx`, `txOptions`, `text`, or `preset` to primitives.
+- Parent barrel: `export { Name } from "./Name/Name"` — never `from "./Name"`.
+- App chrome and native/platform loaders stay in `app/components`. Do not add them here. Do not import route or navigation chrome. Always show pictures with the app image loader. Do not use React Native `Image`.
+
+Canonical layout: @app/respond-ui/components/Text/Text.tsx @app/respond-ui/components/Button/Button.tsx

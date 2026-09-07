@@ -1,0 +1,12 @@
+---
+description: Constraints when editing app chrome in app/components
+globs: app/components/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Editing app chrome
+
+- Stay in `app/components`. Do not move these files into `respond-ui`.
+- This folder is for route/navigation chrome and native/platform loaders — not visual design-system primitives.
+- i18n (`tx`), navigation, keyboard, and safe-area props are allowed here.
+- Visual pieces and tokens come from `respond-ui`. No new hex.

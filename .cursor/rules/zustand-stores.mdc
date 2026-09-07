@@ -1,0 +1,51 @@
+---
+description: Zustand store conventions for app/stores — selectors, stable actions, shallow rules
+globs: app/stores/**/*.{ts,tsx,md}
+alwaysApply: false
+---
+
+# Zustand stores
+
+Canonical example: @app/stores/blockedUsers.ts
+
+## Shape
+
+```ts
+const initialState = { /* flat state */ }
+
+interface FeatureState {
+  // flat state fields
+  actions: {
+    // all mutations here
+  }
+}
+
+export const useFeatureStore = create<FeatureState>()((set) => ({
+  ...initialState,
+  actions: { /* stable object */ },
+}))
+```
+
+- One small store per domain/feature. No giant app store.
+- Flat state + single `actions` object (stable reference).
+- Immutable updates. Prefer arrays/`filter`/`spread` over `delete`.
+- Client UI state only. Server data stays in React Query.
+
+## Consuming
+
+```ts
+// ✅ select specific state
+const value = useFeatureStore((s) => s.value)
+const actions = useFeatureStore((s) => s.actions)
+
+// ❌ never
+const store = useFeatureStore()
+```
+
+- Prefer multiple selectors over shallow.
+- Use `shallow` from `zustand/shallow` only for: 3+ related primitives in one object, arrays of primitives for lists, or prop-spread objects of primitives.
+- Do not use shallow for a single value, nested objects, or `state.actions`.
+
+## File header
+
+New/updated stores keep the store-rules comment block from @app/stores/blockedUsers.ts (selectors, stable actions, shallow when/don't).

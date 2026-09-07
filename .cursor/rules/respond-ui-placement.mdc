@@ -1,0 +1,14 @@
+---
+description: Where new UI belongs
+alwaysApply: true
+---
+
+# UI placement
+
+Decide by **what it is**, not the component name.
+
+- **Look** (variants, tokens, visual primitives, overlays) → `app/respond-ui`. Use the `creating-respond-ui-component` skill. No new hex. Pass copy, data, and callbacks as props.
+- **App chrome / platform wiring** (route shells, navigation chrome, native loaders, device/OS wrappers) → `app/components`. Do not put these in `respond-ui`.
+- One-screen layout stays in that screen.
+
+Always show pictures with the app image loader in `app/components`. Do not use React Native `Image`. Do not import route or navigation chrome from `app/components`. A visual primitive that shows a picture may wrap that loader — that is the only `app/components` import allowed from `respond-ui`.

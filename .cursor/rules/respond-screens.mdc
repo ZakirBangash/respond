@@ -1,0 +1,44 @@
+---
+description: Screen and route conventions under app/routes — tabs, flows, navigation wiring
+globs: app/routes/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Screens and routes
+
+How-to: @app/routes/README.md
+
+Canonical examples:
+- Simple flow: @app/routes/flows/chat/screens/profile/ProfileScreen.tsx
+- Complex flow: @app/routes/flows/chat/screens/chat/ChatScreen.tsx
+- Simple tab: @app/routes/tabs/settings/SettingsTabScreen.tsx
+- Tab → flow: @app/routes/tabs/chats/ChatsTabScreen.tsx
+
+## Placement
+
+- Tab → `app/routes/tabs/<name>/` (`*TabScreen.tsx`)
+- Flow screen → `app/routes/flows/<flow>/screens/<name>/` (`*Screen.tsx`)
+- Do not put screens in `app/components` or `app/respond-ui`
+
+## Required per screen
+
+- `*Screen.tsx` (or `*TabScreen.tsx`)
+- `*Screen.navigation.ts` — types from `*ChildScreenProps`, not hand-rolled
+- `index.ts` — export screen + navigation types (+ params if any)
+- Route constant in that navigator’s `routes.types.ts` + param list
+- Register in that navigator’s `routes.tsx`
+- User-visible copy → i18n keys in all locales (`en.ts` is source of truth)
+
+Optional as needed: `*Screen.types.ts` (params), `*Screen.styles.ts`, `use*Screen.ts` / `hooks/`, `components/`, `utils/`
+
+## Patterns
+
+- Wrap with `@/components/Screen`
+- Prefer navigator-owned headers: set `headerShown: true` and `header: () => <Header title={translate("…")} />` in the flow/tab `routes.tsx`. Do not mount `<Header />` inside the screen for standard bars. Back is automatic when the stack can go back. Tab roots: pass `showBack={false}`.
+- Dynamic headers (e.g. chat contact): use `useHeader({ children: … }, deps)` from the screen hook
+- Custom chrome that is not a header may stay in the screen with `headerShown: false`
+- Prefer `respond-ui` + tokens from `respond-ui/foundations`
+- Prefer logic in `use*Screen`; keep the screen mostly presentational
+- Route names only from `TABS_ROUTES` / `CHAT_ROUTES` / `ROUTES` — never raw `"Chat"` strings
+- New flows: lazy `getComponent={() => require(...)}` on the root stack
+- Tab → flow: `navigation.getParent<RootStackNavigationProp>()?.navigate(...)`
